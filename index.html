@@ -1,0 +1,91 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>实现数据监听原理</title>
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta content="yes" name="apple-mobile-web-app-capable">
+    <meta content="yes" name="apple-touch-fullscreen">
+    <meta content="telephone=no,email=no" name="format-detection">
+    <meta http-equiv="x-dns-prefetch-control" content="on">
+    <style>
+        body, html {
+            width: 100%;
+            height: 100%;
+            font-size: 14px;
+        }
+        * {
+            margin: 0;
+            padding: 0;
+        }
+        .xyf-input {
+            width: 100px;
+            height: 20px;
+            border: 1px solid #ccc;
+            margin: 30px 0 0 10px;
+        }
+        .xyf-input input {
+            width: 100%;
+            height: 100%;
+            display: block;
+            outline: none;
+            border: 0;
+        }
+        .show-con {
+            margin: 10px;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- 页面结构写在这里 -->
+    <div
+        class="xyf-input"
+    >
+        <input 
+            type="text"
+            id="input"
+        />
+    </div>
+    <div 
+        id="show"
+        class="show-con"
+    ></div>
+    <script>
+            var obj = {
+                tex: ''
+            };
+            function defineProperty(obj, attr){
+                var val = '1';
+                Object.defineProperty(obj, attr, {
+                   //  value:123,
+                   // writable: false, // value writable 不能跟set get 同同时存在 
+                    enumerable:false,  // 是否能在for...in循环中遍历出来或在Object.keys中列举出来。
+                    configurable:false, // 总开关，一旦为false，就不能再设置他的（value，writable，configurable）
+                    get: function () {
+                        console.log(val +'取值');
+                         return val;
+                    },
+                    set: function (newValue) {
+                        if (newValue === val){
+                            return;
+                        }
+                        val = newValue;
+                        document.getElementById("input").value = newValue;
+                        document.getElementById("show").innerHTML = newValue;
+                    }
+                });
+            }
+            
+            defineProperty(obj, "txt");
+            document.getElementById("input").addEventListener("keyup", function(e){
+                obj.txt = e.target.value;
+                console.log(obj.txt)  // obj.txt 赋值 或者 取值的时候会分别触发 set 和 get 对应的函数
+            })
+           // https://www.cnblogs.com/weiqu/p/5860945.html
+        </script>
+</body>
+
+</html>
+
